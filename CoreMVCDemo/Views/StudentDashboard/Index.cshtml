@@ -1,0 +1,19 @@
+﻿@model CoreMVCDemo.Models.CourseViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Student Dashboard Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    var userId = '@Html.Raw(Json.Serialize(Model.created_by))';
+    //var userId = 'Html.Raw(Json.Encode(Model.created_by))';
+</script>
+
+<div>
+    @Html.Partial("_StudentMenu.cshtml", Model.created_by.ToString())
+</div>
+<div>
+    @Html.Partial("_AddCourse.cshtml")
+</div>

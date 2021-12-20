@@ -1,0 +1,159 @@
+﻿@model IEnumerable<CoreMVCDemo.Models.GetScholarShipStatusViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "View All Scholarships Status Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    @Html.Partial("_AdminMenu.cshtml", Model.FirstOrDefault().user_Id.ToString())
+</div>
+<h1>View All Applied Scholarships</h1>
+<table class="table">
+    <tr>
+        <th>Select</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Email</th>
+        <th>Course</th>
+        <th>Registered Date</th>
+        <th>Course Fee</th>
+        <th>Amount</th>
+        <th>Scholarship Name</th>
+        <th>Scholarship Status</th>
+        <th>Scholarship Award</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+    <tr>
+        @if(item.scholarship_status == 1){
+        <td>
+            @Html.CheckBox("selStatusId", htmlAttributes: new { value = item.status_id, @checked = true }) @*, @onchange = "checkBoxChanged(this.value)"*@
+        </td>
+            }
+        else{
+    <td>
+        @Html.CheckBox("selStatusId", htmlAttributes: new { value = item.status_id }) @*, @onchange = "checkBoxChanged(this.value)"*@
+    </td>
+        }
+        <td>
+            @Html.DisplayFor(modelItem => item.stu_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.stu_mob)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.stu_email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.stu_course)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.reg_date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.course_fee)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.amount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.scholarship_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.scholarship_status_string)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ScholarshipAward)
+        </td>
+    </tr>
+    }
+</table>
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        <input type="submit" id="approveRejectScholarShipBtnClick" value="Approve/Reject Scholarship" class="btn btn-custom-save btn-danger" />
+    </div>
+</div>
+<div class="modal fade" id="updateScholarshipsStatusConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title col-lg-10"><b>Approve/Reject Students Scholarships</b></h4>
+                <button type="button" id="btnCourseModalClose" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="min-height:155px;">
+                <div class="container-fluid form-horizontal">
+                    <div class="row col-lg-12">
+                        <div class="form-group col-lg-12">
+                            <div class="row row-margin">
+                                <div class="col-md-12 col-md-offset-1">
+                                    @Html.Label(null, "Are you sure you want to approve checked scholarships and disapprove unchecked scholarships?", htmlAttributes: new { @class = "bold-strong control-label col-md-10" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-lg-12" style="text-align: center;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a id="updateStatuScholarshipConfirmBtnClick" class="btn btn-danger btn-ok">Approve/Reject Scholarships</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var approveRejectScholarshipsStatusUrl = '@Url.Action("ApproveRejectScholarships", "AdminDashboard")';
+    $(document).ready(function () {
+        //$("#selStatusId:checked").attr('checked', false);
+        $("#approveRejectScholarShipBtnClick").click(function () {
+            if ($("#selStatusId:checked").val() > 0) {
+                $("#updateScholarshipsStatusConfirmationModal").modal('show');
+            } else {
+                toastr.warning('Please select course and scholarship to continue!');
+            }
+        });
+        $("#updateStatuScholarshipConfirmBtnClick").click(function () {
+            var approvedStatus = $("input[name='selStatusId']:checkbox:checked");
+            var rejectedStatus = $("input[name='selStatusId']:checkbox:not(:checked)");
+            if (approvedStatus.length > 0 || rejectedStatus.length > 0 ) {
+                $("#divLoading").show();
+                var statusData = {}
+                statusData.ApprovedStatusIds = [];
+                statusData.RejectedStatusIds = [];
+                for (i = 0; i < approvedStatus.length; i++) {
+                    statusData.ApprovedStatusIds[i] = $(approvedStatus[i]).val();
+                }
+                for (j = 0; j < rejectedStatus.length; j++) {
+                    statusData.RejectedStatusIds[j] = $(rejectedStatus[j]).val();
+                }
+                $.ajax({
+                    url: approveRejectScholarshipsStatusUrl,
+                    type: 'POST',
+                    data: { _objStatusUpdateData: statusData },
+                    success: function (result) {
+                        if (result == null) {
+                            toastr.warning("Warning: " + "Selected Course Id is invalid. Course Id does not exist. Please try again!");
+                            $("#divLoading").hide();
+                        }
+                        else if (result) {
+                            $("#updateScholarshipsStatusConfirmationModal").modal('hide');
+                            toastr.success("Scholarship Applied successfully");
+                            location.reload();
+                            $("#divLoading").hide();
+                        }
+                    },
+                    error: function (request, error) {
+                        toastr.error("Error: " + JSON.stringify(request));
+                        $("#divLoading").hide();
+                    }
+                });
+            } else {
+                toastr.warning('Please select valid course and scholarship to continue!');
+            }
+        });
+    });
+</script>

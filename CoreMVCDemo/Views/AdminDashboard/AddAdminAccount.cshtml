@@ -1,0 +1,124 @@
+﻿@model CoreMVCDemo.Models.SignUpViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Add Admin Account Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    @Html.Partial("_AdminMenu.cshtml", TempData["userId"].ToString())
+</div>
+<h1>Welcome to Humber, Add Admin Account Page!</h1>
+<div class="container col-lg-12">
+
+    @using (Html.BeginForm("SignUpAdminUser", "AdminDashboard", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal padding10">
+            <h4></h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.FullName, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                <div class="row col-md-12">
+                    @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { id = "txtFullName", placeholder = "Enter Full Name", @class = "col-md-10 form-control", required = "required" } })
+                    <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Age, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                <div class="row col-md-12">
+                    @Html.EditorFor(model => model.Age, new { htmlAttributes = new { id = "txtAge", placeholder = "Enter Age", @class = "col-md-10 form-control", required = "required" } })
+                    <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.GenderId, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                <div class="row col-md-12">
+                    @Html.DropDownListFor(model => model.GenderId, Model.GenderList, "Please select gender", new { @class = "col-md-10 form-control", required = "required" })
+                    <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    @Html.ValidationMessageFor(model => model.GenderId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                <div class="row col-md-12">
+                    @Html.EditorFor(model => model.Username, new { htmlAttributes = new { id = "txtUserName", placeholder = "Enter Username/Email here", @class = "col-md-10 form-control", required = "required" } })
+                    <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                <div class="row col-md-12">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { id = "txtPasswdName", placeholder = "Enter Password here", @class = "col-md-10 form-control", required = "required" } })
+                    <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                <div class="row col-md-12">
+                    @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { id = "txtConfirmPasswdName", placeholder = "Please Confirmed Password here", @class = "col-md-10 form-control", required = "required" } })
+                    <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" id="signUpUserBtn" value="Create Account" class="btn btn-custom-save btn-danger" />
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+<script>
+    var signUpUserUrl = '@Url.Action("AdminDashboard", "SignUpAdminUser")';
+    $(document).ready(function () {
+        $(".helpLink").click(function () {
+            $(event.currentTarget.parentElement).find('[data-toggle="tooltip"]').tooltip();
+        });
+        function courseSelected(courseFee) {
+            $("#txtCourseFee").val(courseFee);
+        }
+        $("form").on('submit', function () {
+            event.preventDefault();
+            // TODO do something here to show user that form is being submitted
+            fetch(event.target.action, {
+                method: 'POST',
+                body: new URLSearchParams(new FormData(event.target)) // event.target is the form
+            }).then((resp) => {
+                console.log(resp);
+                return resp.json(); // or resp.text() or whatever the server sends
+            }).then((body) => {
+                // TODO handle body
+                console.log(body);
+                if (body == "User data already Exist! Please try again with another username.") {
+                    toastr.warning("Warning: " + result);
+                }
+                else {
+                    $("#txtFullName,#txtAge, #txtGender, #txtUserName, #txtPasswdName, #txtConfirmPasswdName").val('');
+                    toastr.success('Successfully added new admin user.');
+                }
+                $("#divLoading").hide();
+            }).catch((error) => {
+                // TODO handle error
+                console.log(error);
+                $("#divLoading").hide();
+
+            });
+            $("#divLoading").show();
+        });
+    });
+</script>

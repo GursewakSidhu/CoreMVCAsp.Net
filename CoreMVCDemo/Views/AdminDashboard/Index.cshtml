@@ -1,0 +1,20 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Admin Dashboard Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>
+    Admin Dashboard, View All Humber students!
+</h1>
+<div>
+    @Html.Partial("_AdminMenu.cshtml", TempData["userId"].ToString())
+</div>
+<div>
+    <label>Welcome to Humber College portal for the upcoming January 2022 intake.
+    Important COVID-19 Humber Updates: Please take vaccination before accessing the Humber campus,
+    Make sure you have downloaded Humber Guardian app in your phone and upload self-assessment status
+    before visiting us. Thank you!!</label>
+</div>

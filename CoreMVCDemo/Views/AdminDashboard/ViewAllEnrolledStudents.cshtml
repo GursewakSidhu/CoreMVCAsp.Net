@@ -1,0 +1,61 @@
+﻿@model IEnumerable<CoreMVCDemo.Models.HumberStudentModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "View All Scholarships Status Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    @Html.Partial("_AdminMenu.cshtml", TempData["userId"].ToString())
+</div>
+<h1>Humber Students</h1>
+<table class="table">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Email</th>
+        <th>Course</th>
+        <th>Registered Date</th>
+        <th>Course Fee</th>
+        <th>Amount</th>
+        <th>Created By</th>
+        <th>IsActive</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayTextFor(modelItem => item.stu_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.stu_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.stu_mob)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.stu_email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.stu_course)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.reg_date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.course_fee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.created_by)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+        </tr>
+    }
+</table>

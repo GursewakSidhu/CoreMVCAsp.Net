@@ -1,0 +1,108 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="bg">
+    @{
+        ViewData["Title"] = "Login Page";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    @*<div class="container" style="background-image: url('humber_building.png');">*@
+    <div>
+        @Html.Partial("~/Views/Shared/_HomeMenu.cshtml")
+    </div>
+    <h2>Welcome to Humber, Login Page!</h2>
+    <div class="container col-lg-8 split left">
+        <form>
+            <div class="form-group" id="divUserName" style="padding: 10px;">
+                <div class="row">
+                    <label class="col-md-8 col-md-offset-1 required-field"><b>Username</b></label>
+                </div>
+                <div class="row row-margin">
+                    <div class="col-md-8 col-md-offset-1">
+                        @Html.TextBox("txtUserName", null, new { placeholder = "Enter Username", @class = "form-control", @maxlength = 100, required = "required" })
+                        <span id="userNameinfo" style="color: #d92800;font-size:1.0em;font-weight:bold">*Provide your Humber user Id here.</span>
+                    </div>
+                    <div class="col-md-2">
+                        <i class="fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" id="divPasswdName" style="padding: 10px;">
+                <div class="row">
+                    <label class="col-md-8 col-md-offset-1 required-field"><b>Password</b></label>
+                </div>
+                <div class="row row-margin">
+                    <div class="col-md-8 col-md-offset-1">
+                        @Html.Password("txtPasswdName", null, new { placeholder = "Enter Password", @class = "form-control", @maxlength = 100, required = "required" })
+                        <span id="passwdinfo" style="color: #d92800;font-size:1.0em;font-weight:bold">*Provide your Humber password here.</span>
+                    </div>
+                    <div class="col-md-2">
+                        <i class="fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5 col-md-offset-1">
+                <button type="button" id="loginBtnSubmit" class="btn btn-custom-save btn-danger">Login</button>  <!--onclick="fnLoginUser();"-->
+                <button type="button" id="signUpBtnSubmit" class="btn btn-info" onclick="fnSignUpUser();">Sign Up</button>
+            </div>
+        </form>
+
+
+    </div>
+    <div class="split right">
+        <div class="row col-md-offset-8 col-md-4">
+            <img src="~/humber.png" />
+        </div>
+    </div>
+</div>
+<script>
+    var loginUrl = '@Url.Action("LoginUser", "Login")';
+    var signUpUrl = '@Url.Action("Index", "SignUp")';
+    var studentDashboardUrl = '@Url.Action("Index", "StudentDashboard")';
+    var adminDashboardUrl = '@Url.Action("Index", "AdminDashboard")';
+    $(document).ready(function () {
+        $(".helpLink").click(function () {
+            $(event.currentTarget.parentElement).find('[data-toggle="tooltip"]').tooltip();
+        });
+        $("#loginBtnSubmit").click(function () {
+            if ($("#txtUserName").val() !== '' && $("#txtPasswdName").val() !== '') {
+                $("#divLoading").show();
+                var _objLoginData = {};
+                _objLoginData.Username = $("#txtUserName").val();
+                _objLoginData.Password = $("#txtPasswdName").val();
+                $.ajax({
+                    url: loginUrl,
+                    type: 'POST',
+                    data: { _objLoginViewModel : _objLoginData },
+                    success: function (result) {
+                        if (result == null) {
+                            toastr.warning("Warning: " + "Entered Username and Password is invalid. Used credentials does not exist. Please try again!");
+                            $("#divLoading").hide();
+                        }
+                        else {
+                            if (result.isAdmin == 1) {
+                                window.open(adminDashboardUrl + '?userId=' + result.login_ID, '_self');
+                            } else {
+                                window.open(studentDashboardUrl + '?userId=' + result.login_ID, '_self');
+                            }
+                            toastr.success('Redirecting to the Dashboard page.');
+                            $("#divLoading").hide();
+                        }
+                    },
+                    error: function (request, error) {
+                        toastr.error("Error: " + JSON.stringify(request));
+                        $("#divLoading").hide();
+                    }
+                });
+            } else {
+                toastr.warning('Please provide username and password!');
+                //toastr.options.timeOut = 1500;//
+            }
+        });
+    });
+    function fnSignUpUser() {
+        window.open(signUpUrl, '_self');
+    }
+</script>

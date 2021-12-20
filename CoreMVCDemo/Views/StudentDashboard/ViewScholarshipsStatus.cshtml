@@ -1,0 +1,62 @@
+﻿@model IEnumerable<CoreMVCDemo.Models.GetScholarShipStatusViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "View Scholarships Status Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    @Html.Partial("_StudentMenu.cshtml", Model.FirstOrDefault().user_Id.ToString())
+</div>
+<h1>View Registered Courses</h1>
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Email</th>
+        <th>Course</th>
+        <th>Registered Date</th>
+        <th>Course Fee</th>
+        <th>Amount</th>
+        <th>Scholarship Name</th>
+        <th>Scholarship Status</th>
+        <th>Scholarship Award</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.stu_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.stu_mob)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.stu_email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.stu_course)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.reg_date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.course_fee)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.amount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.scholarship_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.scholarship_status_string)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ScholarshipAward)
+        </td>
+    </tr>
+    }
+</table>

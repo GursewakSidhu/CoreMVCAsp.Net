@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="MySql.Data" />
+    <None Remove="Views\Login\" />
+    <None Remove="Views\SignUp\" />
+    <None Remove="Views\StudentDashboard\" />
+    <None Remove="Views\AdminDashboard\" />
+    <None Remove="Logics\" />
+    <None Remove="RedWillow.MvcToastrFlash" />
+    <None Remove="HelperMethods.HTMLHelper" />
+    <None Remove="AspNetCoreHero.ToastNotification" />
+    <None Remove="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.27" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Login\" />
+    <Folder Include="Views\SignUp\" />
+    <Folder Include="Views\StudentDashboard\" />
+    <Folder Include="Views\AdminDashboard\" />
+    <Folder Include="Logics\" />
+  </ItemGroup>
+</Project>

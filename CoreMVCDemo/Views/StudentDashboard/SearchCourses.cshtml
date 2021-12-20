@@ -1,0 +1,204 @@
+﻿@model CoreMVCDemo.Models.CourseViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Search Course Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    @Html.Partial("_StudentMenu.cshtml", Model.created_by.ToString())
+</div>
+<h1>Search Registered Course</h1>
+<div class="container col-lg-12">
+    <div class="form-horizontal padding10">
+        <div class="form-group">
+            @Html.Label(null, "Course Id", htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+            <div class="row col-md-12">
+                @Html.TextBox("txtCourseID", null, new { @class = "col-md-10 form-control", placeholder = "Enter Course Id", @maxlength = 255, @required = true })
+                <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" id="searchCourseBtn" value="Search Course" class="btn btn-custom-save btn-danger" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal for Save Course-->
+<div class="modal fade" id="courseModal" data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title col-lg-7"><b>Course Details</b></h4>
+                <button type="button" id="btnCourseModalClose" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="min-height:155px;">
+                <div class="container-fluid form-horizontal">
+                    <div class="row col-lg-12">
+                        <div class="form-group col-lg-12">
+                            <div class="row row-margin">
+                                <div class="col-md-2 col-md-offset-1">
+                                    @Html.Label(null, "Username/ Email", htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                                </div>
+                                <div class="col-md-8 col-md-offset-1">
+                                    @Html.TextBox("txtStudentEmail", null, new { @class = "form-control", @maxlength = 255, @readonly = true })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12">
+                            <div class="row row-margin">
+                                <div class="col-md-2 col-md-offset-1">
+                                    @Html.Label(null, "Student Name", htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                                </div>
+                                <div class="col-md-8 col-md-offset-1">
+                                    @Html.TextBox("txtStudentName", null, new { @class = "form-control", @maxlength = 255, @readonly = true })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12">
+                            <div class="row row-margin">
+                                <div class="col-md-2 col-md-offset-1">
+                                    @Html.Label(null, "Contact", htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                                </div>
+                                <div class="col-md-8 col-md-offset-1">
+                                    @Html.TextBox("txtStudentMob", null, new { @class = "form-control", @maxlength = 255, @readonly = true })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12">
+                            <div class="row row-margin">
+                                <div class="col-md-2 col-md-offset-1">
+                                    @Html.Label(null, "Course Name", htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                                </div>
+                                <div class="col-md-8 col-md-offset-1">
+                                    @Html.TextBox("txtCourseName", null, new { @class = "form-control", @maxlength = 255, @readonly = true })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12">
+                            <div class="row  row-margin">
+                                <div class="col-md-2 col-md-offset-1">
+                                    @Html.Label(null, "Course Fee", htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                                </div>
+                                <div class="col-md-8 col-md-offset-1">
+                                    @Html.TextBox("txtCourseFee", null, new { @class = "form-control", @maxlength = 255, @readonly = true })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12">
+                            <div class="row row-margin">
+                                <div class="col-md-2 col-md-offset-1">
+                                    @Html.Label(null, "Paid Amount", htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                                </div>
+                                <div class="col-md-8 col-md-offset-1">
+                                    @Html.TextBox("txtAmount", null, new { @class = "form-control", @maxlength = 255 })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12">
+                            <div class="row row-margin">
+                                <div class="col-md-2 col-md-offset-1">
+                                    @Html.Label(null, "Registered Date", htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                                </div>
+                                <div class="col-md-8 col-md-offset-1">
+                                    @Html.TextBox("txtRegDate", null, new { @class = "form-control", @maxlength = 255, @readonly = true })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-lg-12" style="text-align: center;">
+                    <button type="button" id="btnSaveEditedCourse" class="btn btn-custom-save btn-danger">Save</button>
+                    <button type="button" id="btnCancelSearch" class="btn btn-link" data-dismiss="modal" style="color: #17a2b8!important; outline: none;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/studentDashboard.js" asp-append-version="true"></script>
+<script>
+    var searchRegisteredCourseUrl = '@Url.Action("SearchRegisteredCourse", "StudentDashboard")';
+    var editCourseUrl = '@Url.Action("EditCourse", "StudentDashboard")';
+    $(document).ready(function () {
+        $("#searchCourseBtn").click(function () {
+            if ($("#txtCourseID").val() !== '') {
+                $("#divLoading").show();
+                $.ajax({
+                    url: searchRegisteredCourseUrl,
+                    type: 'POST',
+                    data: { _courseId: $("#txtCourseID").val() },
+                    success: function (result) {
+                        if (result == null) {
+                            toastr.warning("Warning: " + "Entered Course Id is invalid. Course Id does not exist. Please try again!");
+                            $("#divLoading").hide();
+                        }
+                        else {
+                            $("#txtStudentName").val(result.stu_name);
+                            $("#txtStudentEmail").val(result.stu_email);
+                            $("#txtStudentMob").val(result.stu_mob);
+                            $("#txtCourseName").val(result.stu_course);
+                            $("#txtCourseFee").val(result.course_fee);
+                            $("#txtAmount").val(result.amount);
+                            $("#txtRegDate").val(result.reg_date);
+                            $("#courseModal").modal('show');
+                            toastr.success("Course Details fetched successfully");
+                            $("#divLoading").hide();
+                        }
+                    },
+                    error: function (request, error) {
+                        toastr.error("Error: " + JSON.stringify(request));
+                        $("#divLoading").hide();
+                    }
+                });
+            } else {
+                toastr.warning('Please provide course Id to search for!');
+            }
+        });
+        $("#btnSaveEditedCourse").click(function () {
+            if ($("#txtCourseID").val() !== '') {
+                $("#divLoading").show();
+                var _objCourseViewModel = {}
+                _objCourseViewModel.stu_id = $("#txtCourseID").val();
+                _objCourseViewModel.stu_name = $("#txtStudentName").val();
+                _objCourseViewModel.stu_email = $("#txtStudentEmail").val();
+                _objCourseViewModel.stu_mob = $("#txtStudentMob").val();
+                _objCourseViewModel.stu_course = $("#txtCourseName").val();
+                _objCourseViewModel.course_fee = $("#txtCourseFee").val();
+                _objCourseViewModel.amount = $("#txtAmount").val();
+                _objCourseViewModel.reg_date = $("#txtRegDate").val();
+
+                $.ajax({
+                    url: editCourseUrl,
+                    type: 'POST',
+                    data: { _objCourseViewModel: _objCourseViewModel },
+                    success: function (result) {
+                        if (result == null) {
+                            toastr.warning("Warning: " + "Entered Course Id is invalid. Course Id does not exist. Please try again!");
+                            $("#divLoading").hide();
+                        }
+                        else if (result) {
+                            $("#courseModal").modal('hide');
+                            toastr.success("Course updated successfully");
+                            $("#divLoading").hide();
+                        }
+                    },
+                    error: function (request, error) {
+                        toastr.error("Error: " + JSON.stringify(request));
+                        $("#divLoading").hide();
+                    }
+                });
+            } else {
+                toastr.warning('Please provide course Id to search for!');
+            }
+        });
+    });
+</script>

@@ -1,0 +1,87 @@
+﻿@model CoreMVCDemo.Models.CourseViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+<h1>Student Dashboard</h1>
+<div class="container col-lg-12">
+
+    @using (Html.BeginForm("AddCourse", "StudentDashboard", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal padding10">
+            <h4></h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.stu_name, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                <div class="row col-md-12">
+                    @Html.EditorFor(model => model.stu_name, new { htmlAttributes = new { id = "txtStudentName", placeholder = "Enter Student Name", @class = "col-md-10 form-control", required = "required", @readonly = "readonly" } })
+                    <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    @Html.ValidationMessageFor(model => model.stu_name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.stu_mob, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                <div class="row col-md-12">
+                    @Html.EditorFor(model => model.stu_mob, new { htmlAttributes = new { id = "txtContact", placeholder = "Enter Contact Number", @class = "col-md-10 form-control", required = "required" } })
+                    <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    @Html.ValidationMessageFor(model => model.stu_mob, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.CourseId, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                <div class="row col-md-12">
+                    @Html.DropDownListFor(model => model.CourseId, Model.CourseList, "Please select course", new { id = "txtCourse", @class = "col-md-10 form-control", required = "required", @onchange = "courseSelected(this.value)" })
+                    <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    @Html.ValidationMessageFor(model => model.CourseId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.stu_email, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                <div class="row col-md-12">
+                    @Html.EditorFor(model => model.stu_email, new { htmlAttributes = new { id = "txtEmail", placeholder = "Enter Username/Email here", @class = "col-md-10 form-control", required = "required", @readonly = "readonly" } })
+                    <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    @Html.ValidationMessageFor(model => model.stu_email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.course_fee, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                <div class="row col-md-12">
+                    @Html.EditorFor(model => model.course_fee, new { htmlAttributes = new { id = "txtCourseFee", placeholder = "Course Fee", @class = "col-md-10 form-control", required = "required", @readonly = "readonly" } })
+                    <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    @Html.ValidationMessageFor(model => model.course_fee, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.amount, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                <div class="row col-md-12">
+                    @Html.EditorFor(model => model.amount, new { htmlAttributes = new { id = "txtAmountPaid", placeholder = "Enter paid amount here", @class = "col-md-10 form-control", required = "required" } })
+                    <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                    @Html.ValidationMessageFor(model => model.amount, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" id="saveCourseBtn" value="Save Course" class="btn btn-custom-save btn-danger" />
+
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+<script src="~/js/studentDashboard.js" asp-append-version="true"></script>
+<script>function courseSelected(courseFee) {
+        $("#txtCourseFee").val(courseFee == '' ? 0 : courseFee);
+    }</script>

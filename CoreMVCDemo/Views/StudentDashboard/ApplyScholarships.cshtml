@@ -1,0 +1,120 @@
+﻿@model CoreMVCDemo.Models.ScholarShipSuperViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Apply Scholarships Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    @Html.Partial("_StudentMenu.cshtml", Model.userId)
+</div>
+<h1>Apply Scholarships for the Registered Courses</h1>
+<br />
+<h4>Please select scholarship</h4>
+<table class="table">
+    <tr>
+        <th>Select</th>
+        <th>Name</th>
+        <th>Award</th>
+    </tr>
+    @foreach (var item in Model.AvailableScholarships)
+    {
+        <tr>
+            <td>
+                @Html.RadioButtonFor(model => item.scholarship_id, item.scholarship_id, new { id = "selScholarshipId" })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.scholarship_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.award)
+            </td>
+        </tr>
+    }
+</table>
+
+<h4>Please choose any course</h4>
+<div class="form-group">
+    <div class="row col-md-12">
+        @Html.DropDownListFor(model => model.SavedCourses, Model.SavedCourses, "Please select course", new { id = "txtSavedCourses", @class = "col-md-10 form-control", required = "required" })
+        <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+        @Html.ValidationMessageFor(model => model.CourseId, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        <input type="submit" id="applyScholarShipBtnClick" value="Apply Scholarship" class="btn btn-custom-save btn-danger" />
+    </div>
+</div>
+<div class="modal fade" id="applyScholarshipConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title col-lg-7"><b>Apply Scholarship</b></h4>
+                <button type="button" id="btnCourseModalClose" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="min-height:155px;">
+                <div class="container-fluid form-horizontal">
+                    <div class="row col-lg-12">
+                        <div class="form-group col-lg-12">
+                            <div class="row row-margin">
+                                <div class="col-md-12 col-md-offset-1">
+                                    @Html.Label(null, "Are you sure you want to apply scholarship for the selected course?", htmlAttributes: new { @class = "bold-strong control-label col-md-10" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-lg-12" style="text-align: center;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a id="scholarshipConfirmBtnClick" class="btn btn-danger btn-ok">Apply Scholarship</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var updateScholarshipUrl = '@Url.Action("UpdateScholarships", "StudentDashboard")';
+    $(document).ready(function () {
+        $("#selScholarshipId:checked").attr('checked', false);
+        $("#applyScholarShipBtnClick").click(function () {
+            if ($("#selScholarshipId:checked").val() > 0 && $("#txtSavedCourses").val() > 0) {
+                $("#applyScholarshipConfirmationModal").modal('show');
+            } else {
+                toastr.warning('Please select course and scholarship to continue!');
+            }
+        });
+        $("#scholarshipConfirmBtnClick").click(function () {
+            if ($("#selScholarshipId:checked").val() > 0 && $("#txtSavedCourses").val() > 0) {
+                $("#divLoading").show();
+                $.ajax({
+                    url: updateScholarshipUrl,
+                    type: 'POST',
+                    data: { scholarShipId: $("#selScholarshipId:checked").val(), courseId: $("#txtSavedCourses").val() },
+                    success: function (result) {
+                        if (result == null) {
+                            toastr.warning("Warning: " + "Selected Course Id is invalid. Course Id does not exist. Please try again!");
+                            $("#divLoading").hide();
+                        }
+                        else if (result) {
+                            $("#applyScholarshipConfirmationModal").modal('hide');
+                            toastr.success("Scholarship Applied successfully");
+                            location.reload();
+                            $("#divLoading").hide();
+                        }
+                    },
+                    error: function (request, error) {
+                        toastr.error("Error: " + JSON.stringify(request));
+                        $("#divLoading").hide();
+                    }
+                });
+            } else {
+                toastr.warning('Please select course and scholarship to continue!');
+            }
+        });
+    });
+</script>

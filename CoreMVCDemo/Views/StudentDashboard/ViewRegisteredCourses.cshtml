@@ -1,0 +1,133 @@
+﻿@model IEnumerable<CoreMVCDemo.Models.CourseViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "View Registered Courses Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    @Html.Partial("_StudentMenu.cshtml", Model.FirstOrDefault().created_by.ToString())
+</div>
+<h1>View Registered Courses</h1>
+<table class="table">
+    <tr>
+        <th>Sel</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Email</th>
+        <th>Course</th>
+        <th>Registered Date</th>
+        <th>Course Fee</th>
+        <th>Amount</th>
+        <th>Created By</th>
+        <th>IsActive</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.RadioButtonFor(model => item.stu_id, item.stu_id, new { id = "selCourseId" })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.stu_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.stu_mob)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.stu_email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.stu_course)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.reg_date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.course_fee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.created_by)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+        </tr>
+    }
+</table>
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        <input type="submit" id="deleteSavedCourseBtn" value="Delete Course" class="btn btn-custom-save btn-danger" />
+    </div>
+</div>
+
+<div class="modal fade" id="deleteCourseConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title col-lg-7"><b>Delete Course</b></h4>
+                <button type="button" id="btnCourseModalClose" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="min-height:155px;">
+                <div class="container-fluid form-horizontal">
+                    <div class="row col-lg-12">
+                        <div class="form-group col-lg-12">
+                            <div class="row row-margin">
+                                <div class="col-md-11 col-md-offset-1">
+                                    @Html.Label(null, "Are you sure to delete the selected registered course?", htmlAttributes: new { @class = "bold-strong control-label col-md-10" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-lg-12" style="text-align: center;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a id="delConfirmBtnClick" class="btn btn-danger btn-ok">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var deleteCourseUrl = '@Url.Action("DeleteCourse", "StudentDashboard")';
+    $(document).ready(function () {
+        $("#selCourseId:checked").attr('checked', false);
+        $("#deleteSavedCourseBtn").click(function () {
+            $("#deleteCourseConfirmationModal").modal('show');
+        });
+        $("#delConfirmBtnClick").click(function () {
+            if ($("#selCourseId:checked").val() > 0) {
+                $("#divLoading").show();
+                $.ajax({
+                    url: deleteCourseUrl,
+                    type: 'POST',
+                    data: { deleteCourseId: $("#selCourseId:checked").val() },
+                    success: function (result) {
+                        if (result == null) {
+                            toastr.warning("Warning: " + "Selected Course Id is invalid. Course Id does not exist. Please try again!");
+                            $("#divLoading").hide();
+                        }
+                        else if (result) {
+                            $("#deleteCourseConfirmationModal").modal('hide');
+                            toastr.success("Course deleted successfully");
+                            location.reload();
+                            $("#divLoading").hide();
+                        }
+                    },
+                    error: function (request, error) {
+                        toastr.error("Error: " + JSON.stringify(request));
+                        $("#divLoading").hide();
+                    }
+                });
+            } else {
+                toastr.warning('Please select course to delete for!');
+            }
+        });
+    });
+</script>

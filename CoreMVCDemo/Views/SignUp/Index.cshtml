@@ -1,0 +1,133 @@
+﻿@model CoreMVCDemo.Models.SignUpViewModel
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "SignUp Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Welcome to Humber, SignUp Page!</h2>
+<div class="container col-lg-12">
+    
+        @using (Html.BeginForm("SignUpUser", "SignUp", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal padding10">
+                <h4></h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FullName, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                    <div class="row col-md-12">
+                        @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { id = "txtFullName", placeholder = "Enter Full Name", @class = "col-md-10 form-control", required = "required" } })
+                        <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                        @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Age, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                    <div class="row col-md-12">
+                        @Html.EditorFor(model => model.Age, new { htmlAttributes = new { id = "txtAge", placeholder = "Enter Age", @class = "col-md-10 form-control", required = "required" } })
+                        <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                        @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.GenderId, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                    <div class="row col-md-12">
+                        @Html.DropDownListFor(model => model.GenderId, Model.GenderList, "Please select gender", new { @class = "col-md-10 form-control", required = "required" })
+                        <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                        @Html.ValidationMessageFor(model => model.GenderId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                    <div class="row col-md-12">
+                        @Html.EditorFor(model => model.Username, new { htmlAttributes = new { id = "txtUserName", placeholder = "Enter Username/Email here", @class = "col-md-10 form-control", required = "required" } })
+                        <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                        @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                    <div class="row col-md-12">
+                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { id = "txtPasswdName", placeholder = "Enter Password here", @class = "col-md-10 form-control", required = "required" } })
+                        <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "bold-strong control-label col-md-2" })
+                    <div class="row col-md-12">
+                        @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { id = "txtConfirmPasswdName", placeholder = "Please Confirmed Password here", @class = "col-md-10 form-control", required = "required" } })
+                        <i class="col-md-1 fa fa-lg fa-question-circle helpLink" data-toggle="tooltip" title="For more help please contact Humber IT Desk" hId="48" data-placement="bottom"></i>
+                        @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" id="signUpUserBtn" value="Create Account" class="btn btn-custom-save btn-danger" />
+                        @Html.ActionLink("Back to Login Page", "Index", "Login")
+                    </div>
+                </div> 
+                <!--
+                    <button type="button" id="backBtnSubmit" class="btn btn-info" onclick="fnLoginPage();">Back</button>
+                -->
+            </div>
+        }
+       
+</div>
+
+<script>
+    var signUpUserUrl = '@Url.Action("SignUp", "SignUpUser")';
+    var loginUrl = '@Url.Action("Index", "Login")'
+    $(document).ready(function () {
+        $(".helpLink").click(function () {
+            $(event.currentTarget.parentElement).find('[data-toggle="tooltip"]').tooltip();
+        });
+        $("#signUpUserBtnSubmit").click(function () {
+            if ($("#txtPasswdName").val() !== $("#txtConfirmPasswdName").val()) {
+                toastr.warning("Warning: Please make sure your password is same!");
+            }else if ($("#txtFullName").val() !== '' && $("#txtAge").val() !== '' && $("#txtGender").val() !== '' && $("#txtUserName").val() !== '' && $("#txtPasswdName").val() !== '') {
+                $("#divLoading").show();
+                var _objSignUpData = {};
+                _objSignUpData.FullName = $("#txtFullName").val();
+                _objSignUpData.Age = $("#txtAge").val();
+                _objSignUpData.Gender = $("#txtGender").val();
+                _objSignUpData.Username = $("#txtUserName").val();
+                _objSignUpData.Password = $("#txtPasswdName").val();
+                $.ajax({
+                    url: signUpUserUrl,
+                    type: 'POST',
+                    data: { _objSignUpViewModel: _objSignUpData },
+                    success: function (result) {
+                        if (result == "User data already Exist! Please try again with another username.") {
+                            toastr.warning("Warning: " + result);
+                        }
+                        else {
+                            $("#txtFullName,#txtAge, #txtGender, #txtUserName, #txtPasswdName").val('');
+                            toastr.success('Redirecting to Dashboard page.');
+                        }
+                        $("#divLoading").hide();
+                    },
+                    error: function (request, error) {
+                        toastr.error("Error: " + JSON.stringify(request));
+                        $("#divLoading").hide();
+                    }
+                });
+            } else {
+                toastr.warning('Please provide entry for all the mandatory fields!');
+            }
+        });
+    });
+    function fnLoginPage() {
+        window.open(loginUrl, '_self');
+    }
+</script>
